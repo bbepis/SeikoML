@@ -7,7 +7,7 @@ using System.Reflection;
 using RoR2;
 using UnityEngine;
 
-namespace RoR2ModFramework
+namespace SeikoML
 {
     // Token: 0x02000002 RID: 2
     public static class BaseFramework
@@ -45,7 +45,7 @@ namespace RoR2ModFramework
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
-                            ((IModInterface)modClassInstance).onStart();
+                            ((IModInterface)modClassInstance).OnStart();
                             
                         }
                     }
@@ -54,7 +54,7 @@ namespace RoR2ModFramework
         }
 
         // Token: 0x06000002 RID: 2 RVA: 0x00002184 File Offset: 0x00000384
-        public static void addSurvivors()
+        public static void AddSurvivors()
         {
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod survivors.", new object[]
             {
@@ -83,7 +83,7 @@ namespace RoR2ModFramework
         }
         
         
-        public static void addItems()
+        public static void AddItems()
         {
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod items.", new object[]
             {
