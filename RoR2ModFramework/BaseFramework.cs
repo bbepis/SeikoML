@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using RoR2;
@@ -11,6 +12,7 @@ namespace RoR2ModFramework
     // Token: 0x02000002 RID: 2
     public static class BaseFramework
     {
+        public static readonly string Version = "v0.0.2";
         public static int SurvivorCount { get
             {
                 return SurvivorCatalog.survivorDefs.Count()+SurvivorMods.Count;
@@ -20,11 +22,34 @@ namespace RoR2ModFramework
 
         public static void Begin()
         {
-            Debug.Log("[RoR2ML] Mod Loader active, v1.0.0");
-            foreach (string path in Directory.EnumerateFiles(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "mods"), "*.dll"))
-            {   
-                Debug.Log("[RoR2ML] Mod detected, executing");
-                ((IModInterface)Activator.CreateInstance(Enumerable.SingleOrDefault<Type>(Assembly.LoadFile(path).GetTypes(), (Type x) => Enumerable.Contains<Type>(x.GetInterfaces(), typeof(IModInterface))))).onStart();
+            Debug.LogFormat("[RoR2ML] Mod Loader active, {0}", new object[] { Version });
+            //Thanks Wildbook!
+            var gamePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var modsPath = System.IO.Path.Combine(gamePath, "Mods");
+            foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
+            {
+                using (var zip = ZipFile.OpenRead(archiveFileName))
+                {
+                    var modZipEntry = zip.GetEntry("mod.dll");
+                    if (modZipEntry == null)
+                        continue;
+
+                    using (var file = modZipEntry.Open())
+                    using (var fileMemoryStream = new MemoryStream())
+                    {
+                        file.CopyTo(fileMemoryStream);
+                        var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
+                        var modAssemblyTypes = modAssembly.GetTypes();
+                        var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IModInterface)));
+            
+                        foreach (var modClass in modClasses)
+                        {
+                            var modClassInstance = Activator.CreateInstance(modClass);
+                            ((IModInterface)modClassInstance).onStart();
+                            
+                        }
+                    }
+                }
             }
         }
 
