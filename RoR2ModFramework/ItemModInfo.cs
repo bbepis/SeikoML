@@ -1,7 +1,7 @@
 ﻿using System;
 using RoR2;
 
-namespace RoR2ModFramework
+namespace SeikoML
 {
     // Token: 0x02000006 RID: 6
     public class ItemModInfo

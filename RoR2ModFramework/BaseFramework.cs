@@ -7,18 +7,13 @@ using System.Reflection;
 using RoR2;
 using UnityEngine;
 
-namespace RoR2ModFramework
+namespace SeikoML
 {
-    // Token: 0x02000002 RID: 2
     public static class BaseFramework
     {
         public static readonly string Version = "v0.0.2";
-        public static int SurvivorCount { get
-            {
-                return SurvivorCatalog.survivorDefs.Count()+SurvivorMods.Count;
-            }
-        }
-        private static int VanillaSurvivorCount = SurvivorCatalog.survivorDefs.Count();
+        public static int SurvivorCount { get; set; }
+        public static int VanillaCount { get; set; }
 
         public static void Begin()
         {
@@ -41,7 +36,18 @@ namespace RoR2ModFramework
                         var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
                         var modAssemblyTypes = modAssembly.GetTypes();
                         var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IModInterface)));
-            
+                        //string name;
+                        //var manifest = zip.GetEntry("manifest.json");
+                        //if (manifest == null) name = modAssembly.GetName().ToString();
+                        //else
+                        //{
+                        //    using (var manifestStream = manifest.Open())
+                        //    using (var manifestStringReader = new StreamReader(manifestStream))
+                        //    {
+                        //        name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
+                        //    }
+                        //}
+                        //Debug.LogFormat("[RoR2ML] Loading mod {0}...", new object[] { name });
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
@@ -56,6 +62,7 @@ namespace RoR2ModFramework
         // Token: 0x06000002 RID: 2 RVA: 0x00002184 File Offset: 0x00000384
         public static void addSurvivors()
         {
+            if (BaseFramework.SurvivorMods.Count == 0) return;
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod survivors.", new object[]
             {
                 BaseFramework.SurvivorMods.Count
@@ -69,20 +76,21 @@ namespace RoR2ModFramework
                     survivorModInfo.bodyPrefabString,
                     index
                 });
-                SurvivorCatalog.RegisterSurvivor((SurvivorIndex)VanillaSurvivorCount+index, survivorModInfo.RegisterModSurvivor());
+                SurvivorCatalog.RegisterSurvivor((SurvivorIndex)VanillaCount+index, survivorModInfo.RegisterModSurvivor());
             }
         }
         public static SurvivorIndex[] BuildIdealOrder(SurvivorIndex[] og_order)
         {
+            VanillaCount = og_order.Length;
             List<SurvivorIndex> Order = og_order.TakeWhile(x=>x.ToString() != "Count").ToList();
             foreach (SurvivorModInfo S in SurvivorMods)
             {
                 Order.Add((SurvivorIndex)SurvivorMods.IndexOf(S)+og_order.Length-1);
             }
+            SurvivorCount = Order.Count;
             return Order.Count >= 24 ? Order.Take(24).ToArray() : Order.ToArray();
         }
-        
-        
+
         public static void addItems()
         {
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod items.", new object[]
@@ -108,6 +116,14 @@ namespace RoR2ModFramework
             }
         }
 
+        [Serializable]
+        public class ThunderstoreManifest
+        {
+            public string name;
+            public string version_number;
+            public string website_url;
+            public string description;
+        }
         // Token: 0x04000001 RID: 1
         public static List<SurvivorModInfo> SurvivorMods = new List<SurvivorModInfo>();
 

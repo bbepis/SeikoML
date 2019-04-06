@@ -10,13 +10,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RoR2ModFramework\RoR2ModFramework.csproj" />
+    <ProjectReference Include="..\RoR2ModFramework\SeikoML.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
       <HintPath>..\lib-stripped\Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
     </Reference>
     <Reference Include="Facepunch.Steamworks">
       <HintPath>..\lib-stripped\Facepunch.Steamworks.dll</HintPath>

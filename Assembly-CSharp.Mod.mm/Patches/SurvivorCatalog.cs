@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using RoR2ModFramework;
+using SeikoML;
 using UnityEngine;
 using MonoMod;
 
@@ -9,22 +9,19 @@ namespace RoR2
 {
 	class patch_SurvivorCatalog
 	{
-		public static SurvivorIndex[] idealSurvivorOrder;
-		public static int survivorMaxCount;
+        public static int survivorMaxCount;
 		private static extern void orig_cctor();
 		[MonoModConstructor]
 		private static void cctor()
 		{
             orig_cctor();
-            idealSurvivorOrder = BaseFramework.BuildIdealOrder(idealSurvivorOrder);
 		}
 
 
-        [MonoModIgnore,MonoModPublic]
-        public extern static void RegisterSurvivor(SurvivorIndex survivorIndex, SurvivorDef survivorDef);
-
+        
+        [MonoModReplace]
 		public static SurvivorDef GetSurvivorDef(SurvivorIndex survivorIndex){
-			if (survivorIndex < 0 || survivorIndex > (SurvivorIndex)SurvivorCatalog.survivorDefs.Length)
+			if ((int)survivorIndex < 0 || (int)survivorIndex > SurvivorCatalog.survivorDefs.Length-1)
 			{
 				return null;
 			}
@@ -36,16 +33,20 @@ namespace RoR2
 			typeof(BodyCatalog)
 		})]
 		[MonoModReplace]
-		private static void Init(){
-			SurvivorCatalog.survivorDefs = new SurvivorDef[BaseFramework.SurvivorCount];
-			SurvivorCatalog.RegisterSurvivor(SurvivorIndex.Commando, new SurvivorDef
+		private static void Init()
+        {
+            
+            SurvivorCatalog.idealSurvivorOrder = BaseFramework.BuildIdealOrder(SurvivorCatalog.idealSurvivorOrder);
+            if (BaseFramework.SurvivorCount > SurvivorCatalog.survivorMaxCount) SurvivorCatalog.survivorMaxCount = BaseFramework.SurvivorCount;
+            SurvivorCatalog.survivorDefs = new SurvivorDef[BaseFramework.SurvivorCount];
+			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)0, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("CommandoBody"),
 				displayPrefab = Resources.Load<GameObject>("Prefabs/CharacterDisplays/CommandoDisplay"),
 				descriptionToken = "COMMANDO_DESCRIPTION",
 				primaryColor = new Color(0.929411769f, 0.5882353f, 0.07058824f)
 			});
-			SurvivorCatalog.RegisterSurvivor(SurvivorIndex.Huntress, new SurvivorDef
+			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)1, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("HuntressBody"),
 				displayPrefab = Resources.Load<GameObject>("Prefabs/CharacterDisplays/HuntressDisplay"),
@@ -53,7 +54,7 @@ namespace RoR2
 				descriptionToken = "HUNTRESS_DESCRIPTION",
 				unlockableName = "Characters.Huntress"
 			});
-			SurvivorCatalog.RegisterSurvivor(SurvivorIndex.Toolbot, new SurvivorDef
+			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)2, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("ToolbotBody"),
 				displayPrefab = Resources.Load<GameObject>("Prefabs/CharacterDisplays/ToolbotDisplay"),
@@ -61,7 +62,7 @@ namespace RoR2
 				primaryColor = new Color(0.827451f, 0.768627465f, 0.3137255f),
 				unlockableName = "Characters.Toolbot"
 			});
-			SurvivorCatalog.RegisterSurvivor(SurvivorIndex.Engineer, new SurvivorDef
+			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)3, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("EngiBody"),
 				displayPrefab = Resources.Load<GameObject>("Prefabs/CharacterDisplays/EngiDisplay"),
@@ -69,7 +70,7 @@ namespace RoR2
 				primaryColor = new Color(0.372549027f, 0.8862745f, 0.5254902f),
 				unlockableName = "Characters.Engineer"
 			});
-			SurvivorCatalog.RegisterSurvivor(SurvivorIndex.Mage, new SurvivorDef
+			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)4, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("MageBody"),
 				displayPrefab = Resources.Load<GameObject>("Prefabs/CharacterDisplays/MageDisplay"),
@@ -77,7 +78,7 @@ namespace RoR2
 				primaryColor = new Color(0.968627453f, 0.75686276f, 0.992156863f),
 				unlockableName = "Characters.Mage"
 			});
-			SurvivorCatalog.RegisterSurvivor(SurvivorIndex.Merc, new SurvivorDef
+			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)5, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("MercBody"),
 				displayPrefab = Resources.Load<GameObject>("Prefabs/CharacterDisplays/MercDisplay"),
@@ -85,14 +86,16 @@ namespace RoR2
 				primaryColor = new Color(0.423529416f, 0.819607854f, 0.917647064f),
 				unlockableName = "Characters.Mercenary"
 			});
+            
 			BaseFramework.addSurvivors();
-			for (SurvivorIndex survivorIndex = 0; survivorIndex < (SurvivorIndex)SurvivorCatalog.survivorDefs.Length; survivorIndex++)
+			for (int survivorIndex = 0; survivorIndex < SurvivorCatalog.survivorDefs.Length-1; survivorIndex++)
 			{
-				if (SurvivorCatalog.survivorDefs[(int)survivorIndex] == null)
+                Debug.Log("index: " + survivorIndex);
+				if (SurvivorCatalog.survivorDefs[survivorIndex] == null)
 				{
 					Debug.LogWarningFormat("Unregistered survivor {0}!", new object[]
 					{
-						Enum.GetName(typeof(SurvivorIndex), survivorIndex)
+						survivorIndex
 					});
 				}
 			}

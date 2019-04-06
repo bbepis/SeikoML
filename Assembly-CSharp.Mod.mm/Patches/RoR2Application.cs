@@ -11,7 +11,7 @@ using Facepunch.Steamworks;
 using Rewired;
 using RoR2.ConVar;
 using RoR2.Networking;
-using RoR2ModFramework;
+using SeikoML;
 using SteamAPIValidator;
 using UnityEngine;
 using UnityEngine.Networking;
