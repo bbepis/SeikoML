@@ -36,9 +36,9 @@ namespace RoR2
 		private static void Init()
         {
             
-            SurvivorCatalog.idealSurvivorOrder = BaseFramework.BuildIdealOrder(SurvivorCatalog.idealSurvivorOrder);
-            if (BaseFramework.SurvivorCount > SurvivorCatalog.survivorMaxCount) SurvivorCatalog.survivorMaxCount = BaseFramework.SurvivorCount;
-            SurvivorCatalog.survivorDefs = new SurvivorDef[BaseFramework.SurvivorCount];
+            SurvivorCatalog.idealSurvivorOrder = ModLoader.BuildIdealOrder(SurvivorCatalog.idealSurvivorOrder);
+            if (ModLoader.SurvivorCount > SurvivorCatalog.survivorMaxCount) SurvivorCatalog.survivorMaxCount = ModLoader.SurvivorCount;
+            SurvivorCatalog.survivorDefs = new SurvivorDef[ModLoader.SurvivorCount];
             Debug.LogFormat("[Debug] Defined Survivor Array with {0} survivor slots and max survivor count of {1}", 
                 new object[] 
                 { SurvivorCatalog.survivorDefs.Length, SurvivorCatalog.survivorMaxCount });
@@ -90,7 +90,7 @@ namespace RoR2
 				unlockableName = "Characters.Mercenary"
 			});
             
-			BaseFramework.AddSurvivors(ref SurvivorCatalog.survivorDefs);
+			ModLoader.AddSurvivors(ref SurvivorCatalog.survivorDefs);
 			for (int survivorIndex = 0; survivorIndex < SurvivorCatalog.survivorDefs.Length; survivorIndex++)
 			{
                 Debug.LogFormat("[Debug] Survivor index {0}: {1}",new object[]

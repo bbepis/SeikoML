@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28729.10
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assembly-CSharp.Mod.mm", "Assembly-CSharp.Mod.mm\Assembly-CSharp.Mod.mm.csproj", "{10F00041-7168-4A5F-96AC-D9306FCD182F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeikoML", "RoR2ModFramework\SeikoML.csproj", "{BEF4A9C1-79F1-4034-8115-988148201880}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModExample", "ModExample\ModExample.csproj", "{E14A28FC-5BAF-46B8-8E44-2CBE1FF5F77D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BanditMod", "BanditMod\BanditMod.csproj", "{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E14A28FC-5BAF-46B8-8E44-2CBE1FF5F77D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E14A28FC-5BAF-46B8-8E44-2CBE1FF5F77D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E14A28FC-5BAF-46B8-8E44-2CBE1FF5F77D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E14A28FC-5BAF-46B8-8E44-2CBE1FF5F77D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
