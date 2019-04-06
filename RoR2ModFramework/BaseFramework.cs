@@ -51,7 +51,7 @@ namespace SeikoML
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
-                            ((IModInterface)modClassInstance).onStart();
+                            ((IModInterface)modClassInstance).OnStart();
                             
                         }
                     }
@@ -60,7 +60,7 @@ namespace SeikoML
         }
 
         // Token: 0x06000002 RID: 2 RVA: 0x00002184 File Offset: 0x00000384
-        public static void addSurvivors()
+        public static void AddSurvivors()
         {
             if (BaseFramework.SurvivorMods.Count == 0) return;
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod survivors.", new object[]
@@ -90,8 +90,9 @@ namespace SeikoML
             SurvivorCount = Order.Count;
             return Order.Count >= 24 ? Order.Take(24).ToArray() : Order.ToArray();
         }
-
-        public static void addItems()
+        
+        
+        public static void AddItems()
         {
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod items.", new object[]
             {
