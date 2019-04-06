@@ -24,7 +24,7 @@ namespace RoR2
         public extern static void RegisterSurvivor(SurvivorIndex survivorIndex, SurvivorDef survivorDef);
 
 		public static SurvivorDef GetSurvivorDef(SurvivorIndex survivorIndex){
-			if (survivorIndex < 0 || survivorIndex > (SurvivorIndex)SurvivorCatalog.survivorDefs.Count())
+			if (survivorIndex < 0 || survivorIndex > (SurvivorIndex)SurvivorCatalog.survivorDefs.Length)
 			{
 				return null;
 			}
@@ -86,7 +86,7 @@ namespace RoR2
 				unlockableName = "Characters.Mercenary"
 			});
 			BaseFramework.addSurvivors();
-			for (SurvivorIndex survivorIndex = 0; survivorIndex < (SurvivorIndex)SurvivorCatalog.survivorDefs.Count(); survivorIndex++)
+			for (SurvivorIndex survivorIndex = 0; survivorIndex < (SurvivorIndex)SurvivorCatalog.survivorDefs.Length; survivorIndex++)
 			{
 				if (SurvivorCatalog.survivorDefs[(int)survivorIndex] == null)
 				{

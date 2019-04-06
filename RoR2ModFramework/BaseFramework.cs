@@ -52,7 +52,7 @@ namespace RoR2ModFramework
             List<SurvivorIndex> Order = og_order.TakeWhile(x=>x.ToString() != "Count").ToList();
             foreach (SurvivorModInfo S in SurvivorMods)
             {
-                Order.Add((SurvivorIndex)SurvivorMods.IndexOf(S));
+                Order.Add((SurvivorIndex)SurvivorMods.IndexOf(S)+og_order.Length-1);
             }
             return Order.Count >= 24 ? Order.Take(24).ToArray() : Order.ToArray();
         }
