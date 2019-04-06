@@ -83,7 +83,11 @@ namespace SeikoML
                     survivorModInfo.bodyPrefabString,
                     index
                 });
-                catalog[VanillaCount + index]=survivorModInfo.RegisterModSurvivor();
+                if (survivorModInfo.toReplace > -1 && survivorModInfo.toReplace < VanillaCount)
+                {
+                    catalog[survivorModInfo.toReplace] = survivorModInfo.RegisterModSurvivor();
+                }
+                else catalog[VanillaCount + index]=survivorModInfo.RegisterModSurvivor();
             }
         }
         public static SurvivorIndex[] BuildIdealOrder(SurvivorIndex[] og_order)
