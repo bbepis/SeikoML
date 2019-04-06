@@ -52,7 +52,7 @@ namespace SeikoML
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
-                            ((ISeikoMod)modClassInstance).Start();
+                            ((ISeikoMod)modClassInstance).OnStart();
                             
                         }
                     }

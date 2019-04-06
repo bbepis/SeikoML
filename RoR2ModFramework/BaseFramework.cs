@@ -36,7 +36,7 @@ namespace SeikoML
                         file.CopyTo(fileMemoryStream);
                         var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
                         var modAssemblyTypes = modAssembly.GetTypes();
-                        var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IModInterface)));
+                        var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(ISeikoMod)));
                         string name;
                         var manifest = zip.GetEntry("manifest.json");
                         if (manifest == null) name = modAssembly.GetName().ToString();
@@ -52,7 +52,7 @@ namespace SeikoML
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
-                            ((IModInterface)modClassInstance).OnStart();
+                            ((ISeikoMod)modClassInstance).OnStart();
                             
                         }
                     }

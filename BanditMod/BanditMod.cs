@@ -3,8 +3,10 @@ using SeikoML;
 using UnityEngine;
 
 public class BanditMod : ISeikoMod{
-	public void Start(){
-		SurvivorModInfo survivorModInfo = new SurvivorModInfo{
+
+
+	public void OnStart() {
+		SurvivorModInfo survivorModInfo = new SurvivorModInfo {
 			bodyPrefabString = "BanditBody",
 			descriptionTokenString = "BANDIT_DESCRIPTION",
 			portraitPrefabString = "Prefabs/Characters/BanditDisplay",
