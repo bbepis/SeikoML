@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assembly-CSharp.Mod.mm", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeikoML", "RoR2ModFramework\SeikoML.csproj", "{BEF4A9C1-79F1-4034-8115-988148201880}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lemurian", "Lemurian\Lemurian.csproj", "{9C2AB492-2253-46F0-947B-F54386E5D69C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C2AB492-2253-46F0-947B-F54386E5D69C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C2AB492-2253-46F0-947B-F54386E5D69C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C2AB492-2253-46F0-947B-F54386E5D69C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C2AB492-2253-46F0-947B-F54386E5D69C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

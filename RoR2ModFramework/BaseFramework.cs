@@ -23,12 +23,13 @@ namespace SeikoML
             var modsPath = System.IO.Path.Combine(gamePath, "Mods");
             foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
             {
+                Debug.LogFormat("[RoR2ML] Found mod archive {0}.", new object[] { archiveFileName });
                 using (var zip = ZipFile.OpenRead(archiveFileName))
                 {
                     var modZipEntry = zip.GetEntry("mod.dll");
                     if (modZipEntry == null)
                         continue;
-
+                    Debug.LogFormat("[RoR2ML] Found mod.dll file.", new object[] { archiveFileName });
                     using (var file = modZipEntry.Open())
                     using (var fileMemoryStream = new MemoryStream())
                     {
@@ -36,18 +37,18 @@ namespace SeikoML
                         var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
                         var modAssemblyTypes = modAssembly.GetTypes();
                         var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IModInterface)));
-                        //string name;
-                        //var manifest = zip.GetEntry("manifest.json");
-                        //if (manifest == null) name = modAssembly.GetName().ToString();
-                        //else
-                        //{
-                        //    using (var manifestStream = manifest.Open())
-                        //    using (var manifestStringReader = new StreamReader(manifestStream))
-                        //    {
-                        //        name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
-                        //    }
-                        //}
-                        //Debug.LogFormat("[RoR2ML] Loading mod {0}...", new object[] { name });
+                        string name;
+                        var manifest = zip.GetEntry("manifest.json");
+                        if (manifest == null) name = modAssembly.GetName().ToString();
+                        else
+                        {
+                            using (var manifestStream = manifest.Open())
+                            using (var manifestStringReader = new StreamReader(manifestStream))
+                            {
+                                name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
+                            }
+                        }
+                        Debug.LogFormat("[RoR2ML] [{0}] Loading mod...", new object[] { name });
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
@@ -59,9 +60,15 @@ namespace SeikoML
             }
         }
 
-        // Token: 0x06000002 RID: 2 RVA: 0x00002184 File Offset: 0x00000384
-        public static void AddSurvivors()
+        public static int GetMaxPlayers()
         {
+            return 32;
+        }
+
+        // Token: 0x06000002 RID: 2 RVA: 0x00002184 File Offset: 0x00000384
+        public static void AddSurvivors(ref SurvivorDef[] catalog)
+        {
+            
             if (BaseFramework.SurvivorMods.Count == 0) return;
             Debug.LogFormat("[ROR2ML] Attempting to load {0} mod survivors.", new object[]
             {
@@ -76,19 +83,19 @@ namespace SeikoML
                     survivorModInfo.bodyPrefabString,
                     index
                 });
-                SurvivorCatalog.RegisterSurvivor((SurvivorIndex)VanillaCount+index, survivorModInfo.RegisterModSurvivor());
+                catalog[VanillaCount + index]=survivorModInfo.RegisterModSurvivor();
             }
         }
         public static SurvivorIndex[] BuildIdealOrder(SurvivorIndex[] og_order)
         {
             VanillaCount = og_order.Length;
-            List<SurvivorIndex> Order = og_order.TakeWhile(x=>x.ToString() != "Count").ToList();
-            foreach (SurvivorModInfo S in SurvivorMods)
+            SurvivorIndex[] Order = new SurvivorIndex[og_order.Length + SurvivorMods.Count];
+            for (int index = 0; index < Order.Length-1;index++)
             {
-                Order.Add((SurvivorIndex)SurvivorMods.IndexOf(S)+og_order.Length-1);
+                Order[index] = (SurvivorIndex)index;
             }
-            SurvivorCount = Order.Count;
-            return Order.Count >= 24 ? Order.Take(24).ToArray() : Order.ToArray();
+            SurvivorCount = Order.Length;
+            return Order.Length>= 24 ? Order.Take(24).ToArray() : Order.ToArray();
         }
         
         

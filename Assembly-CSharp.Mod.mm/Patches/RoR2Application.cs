@@ -40,11 +40,8 @@ namespace RoR2
 		{
 			orig_cctor();
 
-			hardMaxPlayers = 32;
-			maxPlayers = 32;
-			maxLocalPlayers = 32;
+			
 			isModded = true;
-			messageForDevelopers = "Don't worry about it at all! Just keep being awesome and doing what you do, we all appreciate and love that you put your time, effort, and money into making such a wonderful game for us all to enjoy. By the way, thank you for adding this. We were looking to do it ourselves until you made it!";
 		}
 
 		public static string GetBuildId(){
@@ -72,7 +69,10 @@ namespace RoR2
 			if (!this.loaded)
 			{
 				BaseFramework.Begin();
-				this.OnLoad();
+                hardMaxPlayers = BaseFramework.GetMaxPlayers();
+                maxPlayers = BaseFramework.GetMaxPlayers();
+                maxLocalPlayers = BaseFramework.GetMaxPlayers();
+                this.OnLoad();
 				this.loaded = true;
 			}
 		}

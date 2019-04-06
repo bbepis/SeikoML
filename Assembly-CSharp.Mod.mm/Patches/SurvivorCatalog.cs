@@ -39,6 +39,7 @@ namespace RoR2
             SurvivorCatalog.idealSurvivorOrder = BaseFramework.BuildIdealOrder(SurvivorCatalog.idealSurvivorOrder);
             if (BaseFramework.SurvivorCount > SurvivorCatalog.survivorMaxCount) SurvivorCatalog.survivorMaxCount = BaseFramework.SurvivorCount;
             SurvivorCatalog.survivorDefs = new SurvivorDef[BaseFramework.SurvivorCount];
+            Debug.LogFormat("[Debug] Defined Survivor Array with {0} survivor slots and max survivor count of {1}", new object[] { SurvivorCatalog.survivorDefs.Length, SurvivorCatalog.survivorMaxCount });
 			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)0, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("CommandoBody"),
@@ -87,7 +88,7 @@ namespace RoR2
 				unlockableName = "Characters.Mercenary"
 			});
             
-			BaseFramework.addSurvivors();
+			BaseFramework.AddSurvivors(ref SurvivorCatalog.survivorDefs);
 			for (int survivorIndex = 0; survivorIndex < SurvivorCatalog.survivorDefs.Length-1; survivorIndex++)
 			{
                 Debug.Log("index: " + survivorIndex);
@@ -109,7 +110,7 @@ namespace RoR2
 				{
                     SurvivorDef survivor = new SurvivorDef();
                     survivor = enumerator.Current;
-                    ViewablesCatalog.Node survivorEntryNode = new ViewablesCatalog.Node(survivor.survivorIndex.ToString(), false, node);
+                    ViewablesCatalog.Node survivorEntryNode = new ViewablesCatalog.Node(survivor.displayNameToken, false, node);
                     survivorEntryNode.shouldShowUnviewed = ((UserProfile userProfile) => !userProfile.HasViewedViewable(survivorEntryNode.fullName) && userProfile.HasSurvivorUnlocked(survivor.survivorIndex) && !string.IsNullOrEmpty(survivor.unlockableName));
                 }
 			}
