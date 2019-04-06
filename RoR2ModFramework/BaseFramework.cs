@@ -90,7 +90,7 @@ namespace SeikoML
         {
             VanillaCount = og_order.Length;
             SurvivorIndex[] Order = new SurvivorIndex[og_order.Length + SurvivorMods.Count];
-            for (int index = 0; index < Order.Length-1;index++)
+            for (int index = 0; index < Order.Length;index++)
             {
                 Order[index] = (SurvivorIndex)index;
             }

@@ -21,7 +21,7 @@ namespace RoR2
         
         [MonoModReplace]
 		public static SurvivorDef GetSurvivorDef(SurvivorIndex survivorIndex){
-			if ((int)survivorIndex < 0 || (int)survivorIndex > SurvivorCatalog.survivorDefs.Length-1)
+			if ((int)survivorIndex < 0 || (int)survivorIndex > SurvivorCatalog.survivorDefs.Length)
 			{
 				return null;
 			}
@@ -39,7 +39,9 @@ namespace RoR2
             SurvivorCatalog.idealSurvivorOrder = BaseFramework.BuildIdealOrder(SurvivorCatalog.idealSurvivorOrder);
             if (BaseFramework.SurvivorCount > SurvivorCatalog.survivorMaxCount) SurvivorCatalog.survivorMaxCount = BaseFramework.SurvivorCount;
             SurvivorCatalog.survivorDefs = new SurvivorDef[BaseFramework.SurvivorCount];
-            Debug.LogFormat("[Debug] Defined Survivor Array with {0} survivor slots and max survivor count of {1}", new object[] { SurvivorCatalog.survivorDefs.Length, SurvivorCatalog.survivorMaxCount });
+            Debug.LogFormat("[Debug] Defined Survivor Array with {0} survivor slots and max survivor count of {1}", 
+                new object[] 
+                { SurvivorCatalog.survivorDefs.Length, SurvivorCatalog.survivorMaxCount });
 			SurvivorCatalog.RegisterSurvivor((SurvivorIndex)0, new SurvivorDef
 			{
 				bodyPrefab = BodyCatalog.FindBodyPrefab("CommandoBody"),
@@ -89,9 +91,13 @@ namespace RoR2
 			});
             
 			BaseFramework.AddSurvivors(ref SurvivorCatalog.survivorDefs);
-			for (int survivorIndex = 0; survivorIndex < SurvivorCatalog.survivorDefs.Length-1; survivorIndex++)
+			for (int survivorIndex = 0; survivorIndex < SurvivorCatalog.survivorDefs.Length; survivorIndex++)
 			{
-                Debug.Log("index: " + survivorIndex);
+                Debug.LogFormat("[Debug] Survivor index {0}: {1}",new object[]
+                    {
+                        survivorIndex,
+                        SurvivorCatalog.survivorDefs.ElementAt(survivorIndex).bodyPrefab
+                    });
 				if (SurvivorCatalog.survivorDefs[survivorIndex] == null)
 				{
 					Debug.LogWarningFormat("Unregistered survivor {0}!", new object[]
@@ -110,8 +116,10 @@ namespace RoR2
 				{
                     SurvivorDef survivor = new SurvivorDef();
                     survivor = enumerator.Current;
+                    Debug.LogFormat("[DEBUG] Creating node for {0}.", new object[] { survivor.displayNameToken });
                     ViewablesCatalog.Node survivorEntryNode = new ViewablesCatalog.Node(survivor.displayNameToken, false, node);
                     survivorEntryNode.shouldShowUnviewed = ((UserProfile userProfile) => !userProfile.HasViewedViewable(survivorEntryNode.fullName) && userProfile.HasSurvivorUnlocked(survivor.survivorIndex) && !string.IsNullOrEmpty(survivor.unlockableName));
+                    Debug.LogFormat("[DEBUG] Created node {0}", new object[] { survivorEntryNode.name });
                 }
 			}
 			ViewablesCatalog.AddNodeToRoot(node);
