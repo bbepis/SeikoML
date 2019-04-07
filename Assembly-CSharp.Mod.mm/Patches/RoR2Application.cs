@@ -50,12 +50,19 @@ namespace RoR2
 			RoR2Application.instance = this;
 			if (!this.loaded)
 			{
-                hardMaxPlayers = ModLoader.GetMaxPlayers();
-                maxPlayers = ModLoader.GetMaxPlayers();
-                maxLocalPlayers = ModLoader.GetMaxPlayers();
-                this.OnLoad();
+				hardMaxPlayers = ModLoader.GetMaxPlayers();
+				maxPlayers = ModLoader.GetMaxPlayers();
+				maxLocalPlayers = ModLoader.GetMaxPlayers();
+				this.OnLoad();
 				this.loaded = true;
 			}
 		}
+
+        private extern void orig_Update();
+        private void Update()
+        {
+            orig_Update();
+            ModLoader.Update();
+        }
 	}
 }
