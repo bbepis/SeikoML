@@ -4,7 +4,7 @@ using System.Text;
 using MonoMod;
 
 namespace RoR2{
-	class ItemCatalog
+	class patch_ItemCatalog
 	{
 		private static extern void orig_RegisterItem(ItemIndex itemIndex, ItemDef itemDef);
 		[MonoModPublic]
