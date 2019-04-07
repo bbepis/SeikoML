@@ -30,7 +30,7 @@ namespace RoR2
 
 		[SystemInitializer(new Type[]
 		{
-			typeof(BodyCatalog)
+			typeof(ModDummy)
 		})]
 		[MonoModReplace]
 		private static void Init()

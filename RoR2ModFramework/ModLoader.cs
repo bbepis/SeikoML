@@ -26,9 +26,18 @@ namespace SeikoML
                 Debug.LogFormat("[RoR2ML] Found mod archive {0}.", new object[] { archiveFileName });
                 using (var zip = ZipFile.OpenRead(archiveFileName))
                 {
+                    
+                    
                     var modZipEntry = zip.GetEntry("Mod.dll");
                     if (modZipEntry == null)
+                    {
+                        var misnamedMod = zip.Entries.FirstOrDefault(x => x.Name.Equals("mod.dll", StringComparison.OrdinalIgnoreCase));
+                        if (misnamedMod != null)
+                        {
+                            Debug.Log($"A mod.dll file exists for {System.IO.Path.GetFileName(archiveFileName)}, but its name is \"{misnamedMod}\" instead of \"mod.dll\".\nPlease change the name to \"mod.dll\".");
+                        }
                         continue;
+                    }
                     Debug.LogFormat("[RoR2ML] Found Mod.dll file.", new object[] { archiveFileName });
                     using (var file = modZipEntry.Open())
                     using (var fileMemoryStream = new MemoryStream())
@@ -52,7 +61,7 @@ namespace SeikoML
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
-                            ((ISeikoMod)modClassInstance).Start();
+                            ((ISeikoMod)modClassInstance).OnStart();
                             
                         }
                     }
