@@ -53,8 +53,8 @@ namespace RoR2
 			};
 
 			ItemDropManager.AddDropInformation(ItemDropLocation.SmallChest, chestSelections);
-			ItemDropManager.AddDropInformation(ItemDropLocation.SmallChest, t2.ToSelection(0.8f), t3.ToSelection(0.2f));
-			ItemDropManager.AddDropInformation(ItemDropLocation.SmallChest, t3.ToSelection(1f));
+			ItemDropManager.AddDropInformation(ItemDropLocation.MediumChest, t2.ToSelection(0.8f), t3.ToSelection(0.2f));
+			ItemDropManager.AddDropInformation(ItemDropLocation.LargeChest, t3.ToSelection());
 		}
 
 		public static void AddEquipmentChestDefaultDrops()
