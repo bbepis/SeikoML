@@ -32,8 +32,8 @@ public class ExampleMod : ISeikoMod //Make sure you implement IModInterface
             usedColor = new Color(0.42352942f, 0.81960785f, 0.91764706f),
         };
         //Make sure to add your modded survivors to the SurvivorMods list! This will ensure they get added!
-        BaseFramework.SurvivorMods.Add(survivorModInfo);
-        BaseFramework.SurvivorMods.Add(survivorModInfo2);
+        ModLoader.SurvivorMods.Add(survivorModInfo);
+        ModLoader.SurvivorMods.Add(survivorModInfo2);
     }
     /*Character IDs:
      * 0 = Comando

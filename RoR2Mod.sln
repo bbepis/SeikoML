@@ -7,9 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assembly-CSharp.Mod.mm", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeikoML", "RoR2ModFramework\SeikoML.csproj", "{BEF4A9C1-79F1-4034-8115-988148201880}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BanditMod", "BanditMod\BanditMod.csproj", "{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ItemDropManager.TestMod", "ItemDropManager.TestMod\ItemDropManager.TestMod.csproj", "{B96A989E-99C1-4267-8ABF-90F98AA62BEC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DropItemsMod", "DropItemsMod\DropItemsMod.csproj", "{86CF280E-D413-4CE4-B208-331854B0D867}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ModExample", "ModExample\ModExample.csproj", "{B1250180-4FCF-44C2-87F1-6FC6384921E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BEF4A9C1-79F1-4034-8115-988148201880}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EF1CE11F-A08C-45C4-A452-70D7C82B15C9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{86CF280E-D413-4CE4-B208-331854B0D867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{86CF280E-D413-4CE4-B208-331854B0D867}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{86CF280E-D413-4CE4-B208-331854B0D867}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{86CF280E-D413-4CE4-B208-331854B0D867}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B96A989E-99C1-4267-8ABF-90F98AA62BEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B96A989E-99C1-4267-8ABF-90F98AA62BEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B96A989E-99C1-4267-8ABF-90F98AA62BEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B96A989E-99C1-4267-8ABF-90F98AA62BEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1250180-4FCF-44C2-87F1-6FC6384921E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1250180-4FCF-44C2-87F1-6FC6384921E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1250180-4FCF-44C2-87F1-6FC6384921E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1250180-4FCF-44C2-87F1-6FC6384921E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
