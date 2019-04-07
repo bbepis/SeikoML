@@ -51,6 +51,10 @@ namespace FunMod {
 			ItemDropManager.AddDropInformation(ItemDropLocation.Chest, t1.ToSelection(0.8f), t2.ToSelection(0.2f), t3.ToSelection(0.03f));
 			ItemDropManager.AddDropInformation(ItemDropLocation.Boss, t3.ToSelection());
 			ItemDropManager.AddDropInformation(ItemDropLocation.Shrine, ItemDropManager.None.ToSelection(0.5f), t1.ToSelection(0.8f), t2.ToSelection(0.2f), t3.ToSelection(0.03f));
+
+			ItemDropManager.EquipmentList = 
+
+			DefaultItemDrops.AddEquipmentChestDefaultDrops();
 		}
 	}
 }

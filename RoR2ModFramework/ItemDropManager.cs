@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace RoR2 {
     public class PickupSelection
@@ -12,12 +13,13 @@ namespace RoR2 {
 	{
 		public static void AddDefaults()
 		{
-			if (ItemDropManager.DefaultDrops) {
-				AddDefaultShrineDrops();
-			}
+			AddDefaultShrineDrops();
+			AddChestDefaultDrops();
+			AddEquipmentChestDefaultDrops();
+			AddBossDefaultDrops();
 		}
 
-		private static void AddDefaultShrineDrops() {
+		public static void AddDefaultShrineDrops() {
 			PickupIndex none = PickupIndex.none;
 			var shrineSelections = new List<PickupSelection> {
 				ItemDropManager.None.ToSelection(ItemDropManager.DefaultShrineFailureWeight),
@@ -29,10 +31,32 @@ namespace RoR2 {
 
 			ItemDropManager.AddDropInformation(ItemDropLocation.Shrine, shrineSelections);
 		}
+
+		public static void AddChestDefaultDrops() {
+			var chestSelections = new List<PickupSelection> {
+				ItemDropManager.None.ToSelection(ItemDropManager.DefaultShrineFailureWeight),
+				ItemDropManager.Tier1DropList.ToSelection(ItemDropManager.DefaultChestTier1DropChance),
+				ItemDropManager.Tier2DropList.ToSelection(ItemDropManager.DefaultChestTier2DropChance),
+				ItemDropManager.Tier3DropList.ToSelection(ItemDropManager.DefaultChestTier3DropChance),
+			};
+
+			ItemDropManager.AddDropInformation(ItemDropLocation.Chest, chestSelections);
+		}
+
+		public static void AddEquipmentChestDefaultDrops() {
+			ItemDropManager.AddDropInformation(ItemDropLocation.EquipmentChest, ItemDropManager.EquipmentList.ToSelection());
+		}
+
+		public static void AddBossDefaultDrops() {
+			ItemDropManager.IncludeSpecialBossDrops = true;
+			ItemDropManager.AddDropInformation(ItemDropLocation.Boss, ItemDropManager.Tier2DropList.ToSelection());
+		}
 	}
 
 	public enum ItemDropLocation {
+		Mobs,
 		Boss,
+		EquipmentChest,
 		Chest,
 		Shrine
 	}
@@ -46,18 +70,27 @@ namespace RoR2 {
 
 		public static void AddDropInformation(ItemDropLocation dropLocation, params PickupSelection[] pickupSelections)
         {
+			Debug.Log($"Adding drop information for {dropLocation.ToString()}: ${pickupSelections.Count()} items");
+
             Selection[dropLocation] = pickupSelections.ToList();
         }
 
 		public static void AddDropInformation(ItemDropLocation dropLocation, List<PickupSelection> pickupSelections) {
+			Debug.Log($"Adding drop information for {dropLocation.ToString()}: ${pickupSelections.Count} items");
+
 			Selection[dropLocation] = pickupSelections;
 		}
 
 		public static PickupIndex GetSelection(ItemDropLocation dropLocation, float normalizedIndex)
         {
+			if (!Selection.ContainsKey(dropLocation))
+				return new PickupIndex(ItemIndex.None);
+			
             var selections = Selection[dropLocation];
+
+
             var weightedSelection = new WeightedSelection<PickupIndex>();
-            foreach (var selection in selections)
+            foreach (var selection in selections.Where(x => x != null))
                 foreach (var pickup in selection.Pickups)
                     weightedSelection.AddChoice(pickup, selection.DropChance / selection.Pickups.Count);
 
@@ -75,9 +108,13 @@ namespace RoR2 {
 
 		public static List<ItemIndex> LunarDropList { get; set; }
 
-		public static Dictionary<ItemDropLocation, List<PickupSelection>> Selection { get; set; }
+		public static Dictionary<ItemDropLocation, List<PickupSelection>> Selection { get; set; } = new Dictionary<ItemDropLocation, List<PickupSelection>>();
 
 		public static PickupSelection ToSelection(this List<ItemIndex> indices, float dropChance = 1.0f) {
+			if (indices == null) {
+				return null;
+			}
+
 			return new PickupSelection {
 				DropChance = dropChance,
 				Pickups = indices.Select(x => new PickupIndex(x)).ToList()
@@ -85,6 +122,10 @@ namespace RoR2 {
 		}
 
 		public static PickupSelection ToSelection(this List<EquipmentIndex> indices, float dropChance = 1.0f) {
+			if (indices == null) {
+				return null;
+			}
+			
 			return new PickupSelection {
 				DropChance = dropChance,
 				Pickups = indices.Select(x => new PickupIndex(x)).ToList()

@@ -28,5 +28,16 @@ namespace RoR2 {
 			this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.Chest,
 				Run.instance.treasureRng.nextNormalizedFloat);
 		}
+
+		[MonoModPublic]
+		public void RollEquipment() {
+			if (!NetworkServer.active) {
+				Debug.LogWarning("[Server] function 'System.Void RoR2.ChestBehavior::RollEquipment()' called on client");
+				return;
+			}
+			
+			this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.EquipmentChest,
+				Run.instance.treasureRng.nextNormalizedFloat);
+		}
 	}
 }

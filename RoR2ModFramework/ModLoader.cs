@@ -21,7 +21,13 @@ namespace SeikoML
             //Thanks Wildbook!
             var gamePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             var modsPath = System.IO.Path.Combine(gamePath, "Mods");
-            foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
+
+			if (!Directory.Exists(modsPath)) {
+				Debug.Log($"[RoR2ML] No mods installed. Please install mods to {modsPath}");
+				return;
+			}
+
+			foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
             {
                 Debug.LogFormat("[RoR2ML] Found mod archive {0}.", new object[] { archiveFileName });
                 using (var zip = ZipFile.OpenRead(archiveFileName))
