@@ -36,7 +36,7 @@ namespace SeikoML
                         file.CopyTo(fileMemoryStream);
                         var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
                         var modAssemblyTypes = modAssembly.GetTypes();
-                        var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IModInterface)));
+                        var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(ISeikoMod)));
                         string name;
                         var manifest = zip.GetEntry("manifest.json");
                         if (manifest == null) name = modAssembly.GetName().ToString();
@@ -52,8 +52,51 @@ namespace SeikoML
                         foreach (var modClass in modClasses)
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
-                            ((IModInterface)modClassInstance).OnStart();
-                            
+                            ((ISeikoMod)modClassInstance).Start();
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void Update()
+        {
+            Debug.LogFormat("[RoR2ML] Mod update event");
+            //Thanks Wildbook!
+            var gamePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var modsPath = System.IO.Path.Combine(gamePath, "Mods");
+            foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
+            {
+                Debug.LogFormat("[RoR2ML] Found mod archive {0}.", new object[] { archiveFileName });
+                using (var zip = ZipFile.OpenRead(archiveFileName))
+                {
+                    var modZipEntry = zip.GetEntry("Mod.dll");
+                    if (modZipEntry == null)
+                        continue;
+                    Debug.LogFormat("[RoR2ML] Found Mod.dll file.", new object[] { archiveFileName });
+                    using (var file = modZipEntry.Open())
+                    using (var fileMemoryStream = new MemoryStream())
+                    {
+                        file.CopyTo(fileMemoryStream);
+                        var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
+                        var modAssemblyTypes = modAssembly.GetTypes();
+                        var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IKookehsMod)));
+                        string name;
+                        var manifest = zip.GetEntry("manifest.json");
+                        if (manifest == null) name = modAssembly.GetName().ToString();
+                        else
+                        {
+                            using (var manifestStream = manifest.Open())
+                            using (var manifestStringReader = new StreamReader(manifestStream))
+                            {
+                                name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
+                            }
+                        }
+                        Debug.LogFormat("[RoR2ML] [{0}] calling update", new object[] { name });
+                        foreach (var modClass in modClasses)
+                        {
+                            var modClassInstance = Activator.CreateInstance(modClass);
+                            ((IKookehsMod)modClassInstance).Update();
                         }
                     }
                 }

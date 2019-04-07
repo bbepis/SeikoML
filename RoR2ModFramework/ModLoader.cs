@@ -53,7 +53,6 @@ namespace SeikoML
                         {
                             var modClassInstance = Activator.CreateInstance(modClass);
                             ((ISeikoMod)modClassInstance).Start();
-                            
                         }
                     }
                 }

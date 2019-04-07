@@ -8,4 +8,10 @@ namespace SeikoML
 		// Token: 0x0600000A RID: 10
 		void Start();
 	}
+
+    // Temporary interface for compatibility with mods that don't implement new method.
+    public interface IKookehsMod : ISeikoMod
+    {
+        void Update();
+    }
 }

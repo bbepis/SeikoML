@@ -76,5 +76,12 @@ namespace RoR2
 				this.loaded = true;
 			}
 		}
+
+        private extern void orig_Update();
+        private void Update()
+        {
+            orig_Update();
+            BaseFramework.Update();
+        }
 	}
 }
