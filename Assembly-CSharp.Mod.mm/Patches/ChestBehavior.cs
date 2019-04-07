@@ -25,8 +25,21 @@ namespace RoR2 {
 				return;
 			}
 
-			this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.Chest,
-				Run.instance.treasureRng.nextNormalizedFloat);
+			if (tier1Chance == 0.8f)
+			{
+				this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.SmallChest,
+					Run.instance.treasureRng.nextNormalizedFloat);
+			}
+			else if (tier2Chance == 0.8f)
+			{
+				this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.MediumChest,
+					Run.instance.treasureRng.nextNormalizedFloat);
+			}
+			else
+			{
+				this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.LargeChest,
+					Run.instance.treasureRng.nextNormalizedFloat);
+			}
 		}
 
 		[MonoModPublic]

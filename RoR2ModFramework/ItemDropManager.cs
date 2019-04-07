@@ -52,7 +52,9 @@ namespace RoR2
 				t3.ToSelection(ItemDropManager.DefaultChestTier3DropChance),
 			};
 
-			ItemDropManager.AddDropInformation(ItemDropLocation.Chest, chestSelections);
+			ItemDropManager.AddDropInformation(ItemDropLocation.SmallChest, chestSelections);
+			ItemDropManager.AddDropInformation(ItemDropLocation.SmallChest, t2.ToSelection(0.8f), t3.ToSelection(0.2f));
+			ItemDropManager.AddDropInformation(ItemDropLocation.SmallChest, t3.ToSelection(1f));
 		}
 
 		public static void AddEquipmentChestDefaultDrops()
@@ -77,8 +79,10 @@ namespace RoR2
 		//Mobs,
 		Boss,
 		EquipmentChest,
-		Chest,
-		Shrine,
+		SmallChest,
+		MediumChest,
+		LargeChest,
+		Shrine
 		//ItemSelectorT1,
 		//ItemSelectorT2,
 		//ItemSelectorT3

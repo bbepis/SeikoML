@@ -1,6 +1,5 @@
 ﻿using RoR2;
 using SeikoML;
-using System;
 using System.Collections.Generic;
 
 namespace FunMod {
@@ -10,7 +9,7 @@ namespace FunMod {
 			SetupItems();
 		}
 
-		public void SetupItems() {
+		private void SetupItems() {
 			var t1 = new List<ItemIndex> {
 				ItemIndex.SecondarySkillMagazine,
 				ItemIndex.BossDamageBonus,
