@@ -2,12 +2,13 @@
 using System.Linq;
 using UnityEngine;
 
-namespace RoR2 {
-    public class PickupSelection
-    {
-        public List<PickupIndex> Pickups { get; set; }
-        public float DropChance { get; set; } = 1.0f;
-    }
+namespace RoR2
+{
+	public class PickupSelection
+	{
+		public List<PickupIndex> Pickups { get; set; }
+		public float DropChance { get; set; } = 1.0f;
+	}
 
 	public static class DefaultItemDrops
 	{
@@ -19,13 +20,15 @@ namespace RoR2 {
 			AddBossDefaultDrops();
 		}
 
-		public static void AddDefaultShrineDrops() {
+		public static void AddDefaultShrineDrops()
+		{
 			var t1 = ItemDropManager.GetDefaultDropList(ItemTier.Tier1);
 			var t2 = ItemDropManager.GetDefaultDropList(ItemTier.Tier2);
 			var t3 = ItemDropManager.GetDefaultDropList(ItemTier.Tier3);
 			var eq = ItemDropManager.GetDefaultEquipmentDropList();
 
-			var shrineSelections = new List<PickupSelection> {
+			var shrineSelections = new List<PickupSelection>
+			{
 				new List<ItemIndex> { ItemIndex.None }.ToSelection(ItemDropManager.DefaultShrineFailureWeight),
 				t1.ToSelection(ItemDropManager.DefaultShrineTier1Weight),
 				t2.ToSelection(ItemDropManager.DefaultShrineTier2Weight),
@@ -36,12 +39,14 @@ namespace RoR2 {
 			ItemDropManager.AddDropInformation(ItemDropLocation.Shrine, shrineSelections);
 		}
 
-		public static void AddChestDefaultDrops() {
+		public static void AddChestDefaultDrops()
+		{
 			var t1 = ItemDropManager.GetDefaultDropList(ItemTier.Tier1);
 			var t2 = ItemDropManager.GetDefaultDropList(ItemTier.Tier2);
 			var t3 = ItemDropManager.GetDefaultDropList(ItemTier.Tier3);
 
-			var chestSelections = new List<PickupSelection> {
+			var chestSelections = new List<PickupSelection>
+			{
 				t1.ToSelection(ItemDropManager.DefaultChestTier1DropChance),
 				t2.ToSelection(ItemDropManager.DefaultChestTier2DropChance),
 				t3.ToSelection(ItemDropManager.DefaultChestTier3DropChance),
@@ -50,13 +55,15 @@ namespace RoR2 {
 			ItemDropManager.AddDropInformation(ItemDropLocation.Chest, chestSelections);
 		}
 
-		public static void AddEquipmentChestDefaultDrops() {
+		public static void AddEquipmentChestDefaultDrops()
+		{
 			var eq = ItemDropManager.GetDefaultEquipmentDropList();
 
 			ItemDropManager.AddDropInformation(ItemDropLocation.EquipmentChest, eq.ToSelection());
 		}
 
-		public static void AddBossDefaultDrops() {
+		public static void AddBossDefaultDrops()
+		{
 			ItemDropManager.IncludeSpecialBossDrops = true;
 
 			var t2 = ItemDropManager.GetDefaultDropList(ItemTier.Tier2);
@@ -65,7 +72,8 @@ namespace RoR2 {
 		}
 	}
 
-	public enum ItemDropLocation {
+	public enum ItemDropLocation
+	{
 		//Mobs,
 		Boss,
 		EquipmentChest,
@@ -84,42 +92,46 @@ namespace RoR2 {
 
 
 		public static void AddDropInformation(ItemDropLocation dropLocation, params PickupSelection[] pickupSelections)
-        {
-			Debug.Log($"Adding drop information for {dropLocation.ToString()}: ${pickupSelections.Count()} items");
+		{
+			Debug.Log($"Adding drop information for {dropLocation.ToString()}: {pickupSelections.Sum(x => x.Pickups.Count)} items");
 
-            Selection[dropLocation] = pickupSelections.ToList();
-        }
+			Selection[dropLocation] = pickupSelections.ToList();
+		}
 
-		public static void AddDropInformation(ItemDropLocation dropLocation, List<PickupSelection> pickupSelections) {
-			Debug.Log($"Adding drop information for {dropLocation.ToString()}: ${pickupSelections.Count} items");
+		public static void AddDropInformation(ItemDropLocation dropLocation, List<PickupSelection> pickupSelections)
+		{
+			Debug.Log($"Adding drop information for {dropLocation.ToString()}: {pickupSelections.Sum(x => x.Pickups.Count)} items");
 
 			Selection[dropLocation] = pickupSelections;
 		}
 
 		public static PickupIndex GetSelection(ItemDropLocation dropLocation, float normalizedIndex)
-        {
+		{
 			if (!Selection.ContainsKey(dropLocation))
 				return new PickupIndex(ItemIndex.None);
-			
-            var selections = Selection[dropLocation];
 
+			var selections = Selection[dropLocation];
 
-            var weightedSelection = new WeightedSelection<PickupIndex>();
-            foreach (var selection in selections.Where(x => x != null))
-                foreach (var pickup in selection.Pickups)
-                    weightedSelection.AddChoice(pickup, selection.DropChance / selection.Pickups.Count);
+			var weightedSelection = new WeightedSelection<PickupIndex>();
+			foreach (var selection in selections.Where(x => x != null))
+				foreach (var pickup in selection.Pickups)
+					weightedSelection.AddChoice(pickup, selection.DropChance / selection.Pickups.Count);
 
-            return weightedSelection.Evaluate(normalizedIndex);
-        }
+			return weightedSelection.Evaluate(normalizedIndex);
+		}
 
-		public static List<ItemIndex> GetDefaultDropList(ItemTier itemTier) {
+		public static List<ItemIndex> GetDefaultDropList(ItemTier itemTier)
+		{
 			var list = new List<ItemIndex>();
 
-			for (ItemIndex itemIndex = ItemIndex.Syringe; itemIndex < ItemIndex.Count; itemIndex++) {
-				if (Run.instance.availableItems.HasItem(itemIndex)) {
+			for (ItemIndex itemIndex = ItemIndex.Syringe; itemIndex < ItemIndex.Count; itemIndex++)
+			{
+				if (Run.instance.availableItems.HasItem(itemIndex))
+				{
 					ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
 
-					if (itemDef.tier == itemTier) {
+					if (itemDef.tier == itemTier)
+					{
 						list.Add(itemIndex);
 					}
 				}
@@ -128,14 +140,19 @@ namespace RoR2 {
 			return list;
 		}
 
-		public static List<EquipmentIndex> GetDefaultLunarDropList() {
+		public static List<EquipmentIndex> GetDefaultLunarDropList()
+		{
 			var list = new List<EquipmentIndex>();
 
-			for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++) {
-				if (Run.instance.availableEquipment.HasEquipment(equipmentIndex)) {
+			for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++)
+			{
+				if (Run.instance.availableEquipment.HasEquipment(equipmentIndex))
+				{
 					EquipmentDef equipmentDef = EquipmentCatalog.GetEquipmentDef(equipmentIndex);
-					if (equipmentDef.canDrop) {
-						if (equipmentDef.isLunar) {
+					if (equipmentDef.canDrop)
+					{
+						if (equipmentDef.isLunar)
+						{
 							list.Add(equipmentIndex);
 						}
 					}
@@ -145,14 +162,19 @@ namespace RoR2 {
 			return list;
 		}
 
-		public static List<EquipmentIndex> GetDefaultEquipmentDropList() {
+		public static List<EquipmentIndex> GetDefaultEquipmentDropList()
+		{
 			var list = new List<EquipmentIndex>();
 
-			for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++) {
-				if (Run.instance.availableEquipment.HasEquipment(equipmentIndex)) {
+			for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++)
+			{
+				if (Run.instance.availableEquipment.HasEquipment(equipmentIndex))
+				{
 					EquipmentDef equipmentDef = EquipmentCatalog.GetEquipmentDef(equipmentIndex);
-					if (equipmentDef.canDrop) {
-						if (!equipmentDef.isLunar) {
+					if (equipmentDef.canDrop)
+					{
+						if (!equipmentDef.isLunar)
+						{
 							list.Add(equipmentIndex);
 						}
 					}
@@ -164,23 +186,29 @@ namespace RoR2 {
 
 		public static Dictionary<ItemDropLocation, List<PickupSelection>> Selection { get; set; } = new Dictionary<ItemDropLocation, List<PickupSelection>>();
 
-		public static PickupSelection ToSelection(this List<ItemIndex> indices, float dropChance = 1.0f) {
-			if (indices == null) {
+		public static PickupSelection ToSelection(this List<ItemIndex> indices, float dropChance = 1.0f)
+		{
+			if (indices == null)
+			{
 				return null;
 			}
 
-			return new PickupSelection {
+			return new PickupSelection
+			{
 				DropChance = dropChance,
 				Pickups = indices.Select(x => new PickupIndex(x)).ToList()
 			};
 		}
 
-		public static PickupSelection ToSelection(this List<EquipmentIndex> indices, float dropChance = 1.0f) {
-			if (indices == null) {
+		public static PickupSelection ToSelection(this List<EquipmentIndex> indices, float dropChance = 1.0f)
+		{
+			if (indices == null)
+			{
 				return null;
 			}
-			
-			return new PickupSelection {
+
+			return new PickupSelection
+			{
 				DropChance = dropChance,
 				Pickups = indices.Select(x => new PickupIndex(x)).ToList()
 			};
