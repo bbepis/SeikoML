@@ -25,6 +25,11 @@ namespace RoR2 {
 				return;
 			}
 
+			if (dropPickup != PickupIndex.none)
+			{
+				return;
+			}
+
 			if (tier1Chance == 0.8f)
 			{
 				this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.SmallChest,
@@ -51,6 +56,16 @@ namespace RoR2 {
 			
 			this.dropPickup = ItemDropManager.GetSelection(ItemDropLocation.EquipmentChest,
 				Run.instance.treasureRng.nextNormalizedFloat);
+		}
+
+		public void SetDropPickup(EquipmentIndex equipmentIndex)
+		{
+			dropPickup = new PickupIndex(equipmentIndex);
+		}
+
+		public void SetDropPickup(ItemIndex itemIndex)
+		{
+			dropPickup = new PickupIndex(itemIndex);
 		}
 	}
 }
