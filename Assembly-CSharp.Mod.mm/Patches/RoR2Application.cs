@@ -1,24 +1,6 @@
 ﻿#pragma warning disable CS0626 // Method, operator, or accessor is marked external and has no attributes on it
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
-using Facepunch.Steamworks;
-using Rewired;
-using RoR2.ConVar;
-using RoR2.Networking;
 using SeikoML;
-using SteamAPIValidator;
-using UnityEngine;
-using UnityEngine.Networking;
-using UnityEngine.Rendering.PostProcessing;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
-using Zio.FileSystems;
 using MonoMod;
 
 namespace RoR2
