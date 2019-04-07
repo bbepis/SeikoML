@@ -4,18 +4,19 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
+using BepInEx;
 using RoR2;
 using UnityEngine;
 
 namespace SeikoML
 {
-	public static class ModLoader
+	public class ModLoader : MonoBehaviour
 	{
 		public static readonly string Version = "v0.0.2";
 		public static int SurvivorCount { get; set; }
 		public static int VanillaCount { get; set; }
 
-		public static void Begin()
+		public void Awake()
 		{
 			Debug.LogFormat("[RoR2ML] Mod Loader active, {0}", new object[] { Version });
 			//Thanks Wildbook!
@@ -52,7 +53,7 @@ namespace SeikoML
 						try
 						{
 							var modAssemblyTypes = modAssembly.GetTypes();
-							var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(ISeikoMod)));
+							var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(RoR2Mod)));
 							string name;
 							var manifest = zip.GetEntry("manifest.json");
 							if (manifest == null) name = modAssembly.GetName().ToString();
@@ -68,7 +69,7 @@ namespace SeikoML
 							foreach (var modClass in modClasses)
 							{
 								var modClassInstance = Activator.CreateInstance(modClass);
-								((ISeikoMod)modClassInstance).OnStart();
+								((RoR2Mod)modClassInstance).OnInit();
 
 							}
 						}
@@ -87,7 +88,12 @@ namespace SeikoML
 			}
 		}
 
-		public static void Update()
+        internal static int GetSurvivorCount()
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void Update()
 		{
 			Debug.LogFormat("[RoR2ML] Mod update event");
 			//Thanks Wildbook!
@@ -108,7 +114,7 @@ namespace SeikoML
 						file.CopyTo(fileMemoryStream);
 						var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
 						var modAssemblyTypes = modAssembly.GetTypes();
-						var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(IKookehsMod)));
+						var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(RoR2Mod)));
 						string name;
 						var manifest = zip.GetEntry("manifest.json");
 						if (manifest == null) name = modAssembly.GetName().ToString();
@@ -124,7 +130,7 @@ namespace SeikoML
 						foreach (var modClass in modClasses)
 						{
 							var modClassInstance = Activator.CreateInstance(modClass);
-							((IKookehsMod)modClassInstance).OnUpdate();
+							((RoR2Mod)modClassInstance).OnUpdate();
 						}
 					}
 				}
@@ -136,8 +142,7 @@ namespace SeikoML
 			return 32;
 		}
 
-		// Token: 0x06000002 RID: 2 RVA: 0x00002184 File Offset: 0x00000384
-		public static void AddSurvivors(ref SurvivorDef[] catalog)
+		private static void AddSurvivors(ref SurvivorDef[] catalog)
 		{
 
 			if (ModLoader.SurvivorMods.Count == 0) return;
@@ -146,7 +151,7 @@ namespace SeikoML
 				ModLoader.SurvivorMods.Count
 			});
 
-			foreach (SurvivorModInfo survivorModInfo in ModLoader.SurvivorMods)
+			foreach (CustomSurvivor survivorModInfo in ModLoader.SurvivorMods)
 			{
 				int index = SurvivorMods.IndexOf(survivorModInfo);
 				Debug.LogFormat("[ROR2ML] Adding mod survivor... (Body: {0}, Index Order: {1})", new object[]
@@ -170,14 +175,14 @@ namespace SeikoML
 		}
 
 
-		public static void AddItems()
+		private static void AddItems()
 		{
 			Debug.LogFormat("[ROR2ML] Attempting to load {0} mod items.", new object[]
 			{
 				ModLoader.ItemMods.Count
 			});
 			uint num = 1u;
-			foreach (ItemModInfo itemModInfo in ModLoader.ItemMods)
+			foreach (CustomItem itemModInfo in ModLoader.ItemMods)
 			{
 				Debug.LogFormat("[ROR2ML] Adding mod item... (Name: {0})", new object[]
 				{
@@ -196,17 +201,21 @@ namespace SeikoML
 		}
 
 		[Serializable]
-		public class ThunderstoreManifest
+		private class ThunderstoreManifest
 		{
 			public string name;
 			public string version_number;
 			public string website_url;
 			public string description;
 		}
-		// Token: 0x04000001 RID: 1
-		public static List<SurvivorModInfo> SurvivorMods = new List<SurvivorModInfo>();
+
+		private static List<CustomSurvivor> SurvivorMods = new List<CustomSurvivor>();
+        public static void RegisterSurvivor(CustomSurvivor survivor) 
+        {
+            SurvivorMods.Add(survivor);
+        }
 
 		// Token: 0x04000002 RID: 2
-		public static List<ItemModInfo> ItemMods = new List<ItemModInfo>();
+		private static List<CustomItem> ItemMods = new List<CustomItem>();
 	}
 }

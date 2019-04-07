@@ -3,7 +3,7 @@
 namespace SeikoML
 {
     // Token: 0x02000006 RID: 6
-    public class ItemModInfo
+    public class CustomItem
     {
         // Token: 0x0600000C RID: 12 RVA: 0x000023B0 File Offset: 0x000005B0
         public ItemDef RegisterModItem()
@@ -45,4 +45,5 @@ namespace SeikoML
         // Token: 0x04000013 RID: 19
         public string iconPathString;
     }
+    
 }
