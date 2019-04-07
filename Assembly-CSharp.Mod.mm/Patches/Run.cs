@@ -11,67 +11,25 @@ namespace RoR2
         [MonoModPublic]
         public void BuildDropTable()
         {
-			this.availableTier1DropList.Clear();
-			this.availableTier2DropList.Clear();
-			this.availableTier3DropList.Clear();
-			this.availableLunarDropList.Clear();
-			this.availableEquipmentDropList.Clear();
-
-
 			if (ItemDropManager.DefaultDrops) {
-				for (ItemIndex itemIndex = ItemIndex.Syringe; itemIndex < ItemIndex.Count; itemIndex++) {
-					if (this.availableItems.HasItem(itemIndex)) {
-						ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
-						List<PickupIndex> list = null;
-						switch (itemDef.tier) {
-							case ItemTier.Tier1:
-								list = this.availableTier1DropList;
-								break;
-							case ItemTier.Tier2:
-								list = this.availableTier2DropList;
-								break;
-							case ItemTier.Tier3:
-								list = this.availableTier3DropList;
-								break;
-							case ItemTier.Lunar:
-								list = this.availableLunarDropList;
-								break;
-						}
-						if (list != null) {
-							list.Add(new PickupIndex(itemIndex));
-						}
-					}
-				}
-
-				for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++) {
-					if (this.availableEquipment.HasEquipment(equipmentIndex)) {
-						EquipmentDef equipmentDef = EquipmentCatalog.GetEquipmentDef(equipmentIndex);
-						if (equipmentDef.canDrop) {
-							if (!equipmentDef.isLunar) {
-								this.availableEquipmentDropList.Add(new PickupIndex(equipmentIndex));
-							} else {
-								this.availableLunarDropList.Add(new PickupIndex(equipmentIndex));
-							}
-						}
-					}
-				}
-
 				// Setup default item lists
-				ItemDropManager.Tier1DropList = availableTier1DropList.Select(x => x.itemIndex).ToList();
-				ItemDropManager.Tier2DropList = availableTier2DropList.Select(x => x.itemIndex).ToList();
-				ItemDropManager.Tier3DropList = availableTier3DropList.Select(x => x.itemIndex).ToList();
-				ItemDropManager.EquipmentList = availableEquipmentDropList.Select(x => x.equipmentIndex).ToList();
-				ItemDropManager.LunarDropList = availableLunarDropList.Select(x => x.itemIndex).ToList();
-
 				DefaultItemDrops.AddDefaults();
-
-			} else {
-				availableTier1DropList.AddRange(ItemDropManager.Tier1DropList.Select(x => new PickupIndex(x)));
-				availableTier2DropList.AddRange(ItemDropManager.Tier2DropList.Select(x => new PickupIndex(x)));
-				availableTier3DropList.AddRange(ItemDropManager.Tier3DropList.Select(x => new PickupIndex(x)));
-				availableEquipmentDropList.AddRange(ItemDropManager.EquipmentList.Select(x => new PickupIndex(x)));
-				availableLunarDropList.AddRange(ItemDropManager.LunarDropList.Select(x => new PickupIndex(x)));
 			}
+
+			this.availableTier1DropList.Clear();
+			this.availableTier1DropList.AddRange(ItemDropManager.GetDefaultDropList(ItemTier.Tier1).Select(x => new PickupIndex(x)).ToList());
+
+			this.availableTier2DropList.Clear();
+			this.availableTier2DropList.AddRange(ItemDropManager.GetDefaultDropList(ItemTier.Tier2).Select(x => new PickupIndex(x)).ToList());
+
+			this.availableTier3DropList.Clear();
+			this.availableTier3DropList.AddRange(ItemDropManager.GetDefaultDropList(ItemTier.Tier3).Select(x => new PickupIndex(x)).ToList());
+
+			this.availableEquipmentDropList.Clear();
+			this.availableEquipmentDropList.AddRange(ItemDropManager.GetDefaultEquipmentDropList().Select(x => new PickupIndex(x)).ToList());
+
+			this.availableLunarDropList.Clear();
+			this.availableLunarDropList.AddRange(ItemDropManager.GetDefaultLunarDropList().Select(x => new PickupIndex(x)).ToList());
 
 			this.smallChestDropTierSelector.Clear();
 			this.smallChestDropTierSelector.AddChoice(this.availableTier1DropList, 0.8f);

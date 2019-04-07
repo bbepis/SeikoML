@@ -20,45 +20,60 @@ namespace RoR2 {
 		}
 
 		public static void AddDefaultShrineDrops() {
-			PickupIndex none = PickupIndex.none;
+			var t1 = ItemDropManager.GetDefaultDropList(ItemTier.Tier1);
+			var t2 = ItemDropManager.GetDefaultDropList(ItemTier.Tier2);
+			var t3 = ItemDropManager.GetDefaultDropList(ItemTier.Tier3);
+			var eq = ItemDropManager.GetDefaultEquipmentDropList();
+
 			var shrineSelections = new List<PickupSelection> {
-				ItemDropManager.None.ToSelection(ItemDropManager.DefaultShrineFailureWeight),
-				ItemDropManager.Tier1DropList.ToSelection(ItemDropManager.DefaultShrineTier1Weight),
-				ItemDropManager.Tier2DropList.ToSelection(ItemDropManager.DefaultShrineTier2Weight),
-				ItemDropManager.Tier3DropList.ToSelection(ItemDropManager.DefaultShrineTier3Weight),
-				ItemDropManager.EquipmentList.ToSelection(ItemDropManager.DefaultShrineEquipmentWeight)
+				new List<ItemIndex> { ItemIndex.None }.ToSelection(ItemDropManager.DefaultShrineFailureWeight),
+				t1.ToSelection(ItemDropManager.DefaultShrineTier1Weight),
+				t2.ToSelection(ItemDropManager.DefaultShrineTier2Weight),
+				t3.ToSelection(ItemDropManager.DefaultShrineTier3Weight),
+				eq.ToSelection(ItemDropManager.DefaultShrineEquipmentWeight)
 			};
 
 			ItemDropManager.AddDropInformation(ItemDropLocation.Shrine, shrineSelections);
 		}
 
 		public static void AddChestDefaultDrops() {
+			var t1 = ItemDropManager.GetDefaultDropList(ItemTier.Tier1);
+			var t2 = ItemDropManager.GetDefaultDropList(ItemTier.Tier2);
+			var t3 = ItemDropManager.GetDefaultDropList(ItemTier.Tier3);
+
 			var chestSelections = new List<PickupSelection> {
-				ItemDropManager.None.ToSelection(ItemDropManager.DefaultShrineFailureWeight),
-				ItemDropManager.Tier1DropList.ToSelection(ItemDropManager.DefaultChestTier1DropChance),
-				ItemDropManager.Tier2DropList.ToSelection(ItemDropManager.DefaultChestTier2DropChance),
-				ItemDropManager.Tier3DropList.ToSelection(ItemDropManager.DefaultChestTier3DropChance),
+				t1.ToSelection(ItemDropManager.DefaultChestTier1DropChance),
+				t2.ToSelection(ItemDropManager.DefaultChestTier2DropChance),
+				t3.ToSelection(ItemDropManager.DefaultChestTier3DropChance),
 			};
 
 			ItemDropManager.AddDropInformation(ItemDropLocation.Chest, chestSelections);
 		}
 
 		public static void AddEquipmentChestDefaultDrops() {
-			ItemDropManager.AddDropInformation(ItemDropLocation.EquipmentChest, ItemDropManager.EquipmentList.ToSelection());
+			var eq = ItemDropManager.GetDefaultEquipmentDropList();
+
+			ItemDropManager.AddDropInformation(ItemDropLocation.EquipmentChest, eq.ToSelection());
 		}
 
 		public static void AddBossDefaultDrops() {
 			ItemDropManager.IncludeSpecialBossDrops = true;
-			ItemDropManager.AddDropInformation(ItemDropLocation.Boss, ItemDropManager.Tier2DropList.ToSelection());
+
+			var t2 = ItemDropManager.GetDefaultDropList(ItemTier.Tier2);
+
+			ItemDropManager.AddDropInformation(ItemDropLocation.Boss, t2.ToSelection());
 		}
 	}
 
 	public enum ItemDropLocation {
-		Mobs,
+		//Mobs,
 		Boss,
 		EquipmentChest,
 		Chest,
-		Shrine
+		Shrine,
+		//ItemSelectorT1,
+		//ItemSelectorT2,
+		//ItemSelectorT3
 	}
 
 	public static class ItemDropManager
@@ -97,16 +112,55 @@ namespace RoR2 {
             return weightedSelection.Evaluate(normalizedIndex);
         }
 
+		public static List<ItemIndex> GetDefaultDropList(ItemTier itemTier) {
+			var list = new List<ItemIndex>();
 
-		public static List<ItemIndex> Tier1DropList { get; set; }
+			for (ItemIndex itemIndex = ItemIndex.Syringe; itemIndex < ItemIndex.Count; itemIndex++) {
+				if (Run.instance.availableItems.HasItem(itemIndex)) {
+					ItemDef itemDef = ItemCatalog.GetItemDef(itemIndex);
 
-		public static List<ItemIndex> Tier2DropList { get; set; }
+					if (itemDef.tier == itemTier) {
+						list.Add(itemIndex);
+					}
+				}
+			}
 
-		public static List<ItemIndex> Tier3DropList { get; set; }
+			return list;
+		}
 
-		public static List<EquipmentIndex> EquipmentList { get; set; }
+		public static List<EquipmentIndex> GetDefaultLunarDropList() {
+			var list = new List<EquipmentIndex>();
 
-		public static List<ItemIndex> LunarDropList { get; set; }
+			for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++) {
+				if (Run.instance.availableEquipment.HasEquipment(equipmentIndex)) {
+					EquipmentDef equipmentDef = EquipmentCatalog.GetEquipmentDef(equipmentIndex);
+					if (equipmentDef.canDrop) {
+						if (equipmentDef.isLunar) {
+							list.Add(equipmentIndex);
+						}
+					}
+				}
+			}
+
+			return list;
+		}
+
+		public static List<EquipmentIndex> GetDefaultEquipmentDropList() {
+			var list = new List<EquipmentIndex>();
+
+			for (EquipmentIndex equipmentIndex = EquipmentIndex.CommandMissile; equipmentIndex < EquipmentIndex.Count; equipmentIndex++) {
+				if (Run.instance.availableEquipment.HasEquipment(equipmentIndex)) {
+					EquipmentDef equipmentDef = EquipmentCatalog.GetEquipmentDef(equipmentIndex);
+					if (equipmentDef.canDrop) {
+						if (!equipmentDef.isLunar) {
+							list.Add(equipmentIndex);
+						}
+					}
+				}
+			}
+
+			return list;
+		}
 
 		public static Dictionary<ItemDropLocation, List<PickupSelection>> Selection { get; set; } = new Dictionary<ItemDropLocation, List<PickupSelection>>();
 
@@ -144,5 +198,9 @@ namespace RoR2 {
 		public static float DefaultShrineTier1Weight = 8f;
 		public static float DefaultShrineTier2Weight = 2f;
 		public static float DefaultShrineTier3Weight = 0.2f;
+
+		public static float DefaultTier1SelectorDropChance = 0.8f;
+		public static float DefaultTier2SelectorDropChance = 0.2f;
+		public static float DefaultTier3SelectorDropChance = 0.01f;
 	}
 }
