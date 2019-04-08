@@ -11,16 +11,16 @@
       <HintPath>..\lib-stripped\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="BepInEx">
-      <HintPath>..\..\..\..\Downloads\BepInEx.dll</HintPath>
+      <HintPath>..\..\BepInEx\bin\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>..\..\..\..\Downloads\MMHOOK_Assembly-CSharp.dll</HintPath>
+      <HintPath>..\lib-stripped\MMHOOK_Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>..\..\..\..\Downloads\Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\BepInEx\bin\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="MonoMod.Utils">
-      <HintPath>..\..\..\..\Downloads\MonoMod.Utils.dll</HintPath>
+      <HintPath>..\lib-stripped\MonoMod.Utils.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\lib-stripped\UnityEngine.dll</HintPath>
