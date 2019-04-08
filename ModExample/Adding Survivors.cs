@@ -11,7 +11,7 @@ public class ExampleMod : RoR2Mod //Make sure you implement RoR2Mod
      * Make sure you have SeikoML and UnityEngine.CoreModule 
      * (found in your \Risk of Rain 2\Risk of Rain 2_Data\Managed folder)
      * added to your dependencies.*/
-    public void Awake() 
+    public override void Awake() 
     {
         //Define a new survivor mod info, which contains the information for a modded survivor.
         CustomSurvivor survivorModInfo = new CustomSurvivor

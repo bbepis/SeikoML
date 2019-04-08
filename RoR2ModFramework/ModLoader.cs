@@ -10,9 +10,10 @@ using UnityEngine;
 
 namespace SeikoML
 {
-	public class ModLoader : MonoBehaviour
+    [BepInPlugin("RoR2ModAPI","Mod API", "0.0.1")]
+	public static class ModLoader 
 	{
-		public void Awake()
+		public static void Awake()
 		{
 			Debug.LogFormat("[RoR2ML] Mod Loader active, {0}", new object[] { Version });
 			//Thanks Wildbook!
@@ -62,13 +63,13 @@ namespace SeikoML
 								}
 							}
 							Debug.LogFormat("[RoR2ML] [{0}] Mod found, loaded into the assembly. ", new object[] { name });
-							//foreach (var modClass in modClasses)
-							//{
-							//	var modClassInstance = Activator.CreateInstance(modClass);
-							//	((RoR2Mod)modClassInstance).OnInit();   
+                            foreach (var modClass in modClasses)
+                            {
+                                var modClassInstance = Activator.CreateInstance(modClass);
+                                ((RoR2Mod)modClassInstance).Awake();
 
-							//}
-						}
+                            }
+                        }
 						catch (ReflectionTypeLoadException ex)
 						{
 							// now look at ex.LoaderExceptions - this is an Exception[], so:

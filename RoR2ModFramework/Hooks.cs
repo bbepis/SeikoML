@@ -22,7 +22,7 @@ namespace RoR2ModAPI
             {   
                 MMILCursor c = IL.At(0);
                 //If survivor count > Vanilla Max, change max survivor count 
-                if ((int)c.Next.Operand < ModLoader.GetSurvivorCount()) c.EmitDelegate<Func<int>>(ModLoader.GetSurvivorCount);
+                c.EmitDelegate<Func<int,int>>(r => VerifyMaxSurvivors(r));
 
                 //move Cursor to the right place
                 c.GotoNext(x=>x.MatchStsfld(typeof(SurvivorCatalog), "idealSurvivorOrder"));
@@ -56,6 +56,11 @@ namespace RoR2ModAPI
                 //The Viewable node is created, ensuring that the modded survivors are added to the menu
                 c.GotoNext(x => x.MatchStsfld(typeof(SurvivorCatalog), "_allSurvivorDefs"));
             };
+        }
+        private int VerifyMaxSurvivors(int current)
+        {
+            if (current < ModLoader.GetSurvivorCount()) return ModLoader.GetSurvivorCount();
+            else return current;
         }
     }
 }

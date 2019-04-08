@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class BanditMod : RoR2Mod
 {
-	public void Awake()
+	public override void Awake()
     {
         CustomSurvivor survivorModInfo = new CustomSurvivor {
             Survivor = new SurvivorDef() {
@@ -28,7 +28,7 @@ public class BanditMod : RoR2Mod
         SkillLocator.utility.name = "Smokebomb";
         SkillLocator.utility.skillDescriptionToken = "Turn invisible for <style=cIsDamage>3 seconds</style>, gaining <style=cIsUtility>increased movement speed</style>.";
         SkillLocator.special.name = "Thermite Toss";
-        SkillLocator.special.skillDescriptionToken = "Fire off a burning Thermite grenade, dealing <style=cIsDamage>damage over time</style>.",
+        SkillLocator.special.skillDescriptionToken = "Fire off a burning Thermite grenade, dealing <style=cIsDamage>damage over time</style>.";
         
         ModLoader.RegisterSurvivor(survivorModInfo);
 	}

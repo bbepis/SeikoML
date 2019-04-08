@@ -6,6 +6,7 @@ namespace SeikoML
 {
     public abstract class RoR2Mod : MonoBehaviour
     {
-        
+        public abstract void Awake();
     }
+     
 }
