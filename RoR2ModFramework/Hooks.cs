@@ -56,6 +56,10 @@ namespace RoR2ModAPI
                 //The Viewable node is created, ensuring that the modded survivors are added to the menu
                 c.GotoNext(x => x.MatchStsfld(typeof(SurvivorCatalog), "_allSurvivorDefs"));
             };
+            On.RoR2.SystemInitializerAttribute.Execute += (orig) =>
+            {
+                orig();
+            };
         }
         private int VerifyMaxSurvivors(int current)
         {

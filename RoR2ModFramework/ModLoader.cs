@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using BepInEx;
+using System.IO.Compression;
+using System.Threading.Tasks;
+using System.Collections.Generic;
 using RoR2;
+using BepInEx;
 using UnityEngine;
 
 namespace SeikoML
@@ -15,74 +16,13 @@ namespace SeikoML
 	{
 		public static void Awake()
 		{
-			Debug.LogFormat("[RoR2ML] Mod Loader active, {0}", new object[] { Version });
-			//Thanks Wildbook!
-			var gamePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			var modsPath = System.IO.Path.Combine(gamePath, "Mods");
 
-			if (!Directory.Exists(modsPath))
-			{
-				Debug.Log($"[RoR2ML] No mods installed. Please install mods to {modsPath}");
-				return;
-			}
+            while(!RoR2Application.instance.loaded)
+            {
+                Task.Delay(1);
+            }
 
-			foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
-			{
-				Debug.LogFormat("[RoR2ML] Found mod archive {0}.", new object[] { archiveFileName });
-				using (var zip = ZipFile.OpenRead(archiveFileName))
-				{
-					var modZipEntry = zip.GetEntry("Mod.dll");
-                    if (modZipEntry == null)
-                    {
-                        var misnamedMod = zip.Entries.FirstOrDefault(x => x.Name.Equals("mod.dll", StringComparison.OrdinalIgnoreCase));
-                        if (misnamedMod != null)
-                        {
-                            Debug.Log($"A mod.dll file exists for {System.IO.Path.GetFileName(archiveFileName)}, but its name is \"{misnamedMod}\" instead of \"mod.dll\".\nPlease change the name to \"mod.dll\".");
-                        }
-                        continue;
-                    }
-                    Debug.LogFormat("[RoR2ML] Found Mod.dll file.", new object[] { archiveFileName });
-					using (var file = modZipEntry.Open())
-					using (var fileMemoryStream = new MemoryStream())
-					{
-						file.CopyTo(fileMemoryStream);
-						var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
-						try
-						{
-							var modAssemblyTypes = modAssembly.GetTypes();
-							var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(RoR2Mod)));
-							string name;
-							var manifest = zip.GetEntry("manifest.json");
-							if (manifest == null) name = modAssembly.GetName().ToString();
-							else
-							{
-								using (var manifestStream = manifest.Open())
-								using (var manifestStringReader = new StreamReader(manifestStream))
-								{
-									name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
-								}
-							}
-							Debug.LogFormat("[RoR2ML] [{0}] Mod found, loaded into the assembly. ", new object[] { name });
-                            foreach (var modClass in modClasses)
-                            {
-                                var modClassInstance = Activator.CreateInstance(modClass);
-                                ((RoR2Mod)modClassInstance).Awake();
-
-                            }
-                        }
-						catch (ReflectionTypeLoadException ex)
-						{
-							// now look at ex.LoaderExceptions - this is an Exception[], so:
-							foreach (Exception inner in ex.LoaderExceptions)
-							{
-								// write details of "inner", in particular inner.Message
-								Debug.Log(inner.Message);
-								Debug.Log(inner);
-							}
-						}
-					}
-				}
-			}
+			
 		}
 
         internal static int GetSurvivorCount()
@@ -190,7 +130,7 @@ namespace SeikoML
             LobbySize = value;
         }
 
-        
+        public static bool Loaded;
 		private static List<CustomSurvivor> SurvivorMods = new List<CustomSurvivor>();
 		private static List<CustomItem> ItemMods = new List<CustomItem>();
         private static int LobbySize { get; set; }

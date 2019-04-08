@@ -8,5 +8,10 @@ namespace SeikoML
     {
         public abstract void Awake();
     }
-     
+
+
+    public class CharacterMod : Attribute
+    {
+        public string Name { get; protected set; }
+    }
 }
