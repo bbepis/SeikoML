@@ -12,10 +12,6 @@ namespace SeikoML
 {
 	public class ModLoader : MonoBehaviour
 	{
-		public static readonly string Version = "v0.0.2";
-		public static int SurvivorCount { get; set; }
-		public static int VanillaCount { get; set; }
-
 		public void Awake()
 		{
 			Debug.LogFormat("[RoR2ML] Mod Loader active, {0}", new object[] { Version });
@@ -65,13 +61,13 @@ namespace SeikoML
 									name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
 								}
 							}
-							Debug.LogFormat("[RoR2ML] [{0}] Loading mod...", new object[] { name });
-							foreach (var modClass in modClasses)
-							{
-								var modClassInstance = Activator.CreateInstance(modClass);
-								((RoR2Mod)modClassInstance).OnInit();
+							Debug.LogFormat("[RoR2ML] [{0}] Mod found, loaded into the assembly. ", new object[] { name });
+							//foreach (var modClass in modClasses)
+							//{
+							//	var modClassInstance = Activator.CreateInstance(modClass);
+							//	((RoR2Mod)modClassInstance).OnInit();   
 
-							}
+							//}
 						}
 						catch (ReflectionTypeLoadException ex)
 						{
@@ -90,77 +86,46 @@ namespace SeikoML
 
         internal static int GetSurvivorCount()
         {
-            throw new NotImplementedException();
+            return SurvivorCount;
         }
-
-        public static void Update()
-		{
-			Debug.LogFormat("[RoR2ML] Mod update event");
-			//Thanks Wildbook!
-			var gamePath = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			var modsPath = System.IO.Path.Combine(gamePath, "Mods");
-			foreach (string archiveFileName in Directory.EnumerateFiles(modsPath, "*.zip"))
-			{
-				Debug.LogFormat("[RoR2ML] Found mod archive {0}.", new object[] { archiveFileName });
-				using (var zip = ZipFile.OpenRead(archiveFileName))
-				{
-					var modZipEntry = zip.GetEntry("Mod.dll");
-					if (modZipEntry == null)
-						continue;
-					Debug.LogFormat("[RoR2ML] Found Mod.dll file.", new object[] { archiveFileName });
-					using (var file = modZipEntry.Open())
-					using (var fileMemoryStream = new MemoryStream())
-					{
-						file.CopyTo(fileMemoryStream);
-						var modAssembly = Assembly.Load(fileMemoryStream.ToArray());
-						var modAssemblyTypes = modAssembly.GetTypes();
-						var modClasses = modAssemblyTypes.Where(x => x.GetInterfaces().Contains(typeof(RoR2Mod)));
-						string name;
-						var manifest = zip.GetEntry("manifest.json");
-						if (manifest == null) name = modAssembly.GetName().ToString();
-						else
-						{
-							using (var manifestStream = manifest.Open())
-							using (var manifestStringReader = new StreamReader(manifestStream))
-							{
-								name = JsonUtility.FromJson<ThunderstoreManifest>(manifestStringReader.ReadToEnd()).name;
-							}
-						}
-						Debug.LogFormat("[RoR2ML] [{0}] calling update", new object[] { name });
-						foreach (var modClass in modClasses)
-						{
-							var modClassInstance = Activator.CreateInstance(modClass);
-							((RoR2Mod)modClassInstance).OnUpdate();
-						}
-					}
-				}
-			}
-		}
 
 		public static int GetMaxPlayers()
 		{
-			return 32;
+			return LobbySize;
 		}
 
-		private static void AddSurvivors(ref SurvivorDef[] catalog)
+		public static SurvivorDef[] LoadSurvivors(SurvivorDef[] catalog)
 		{
 
-			if (ModLoader.SurvivorMods.Count == 0) return;
+            if (ModLoader.SurvivorMods.Count == 0) return catalog;
 			Debug.LogFormat("[ROR2ML] Attempting to load {0} mod survivors.", new object[]
 			{
 				ModLoader.SurvivorMods.Count
 			});
 
-			foreach (CustomSurvivor survivorModInfo in ModLoader.SurvivorMods)
+			foreach (CustomSurvivor survivor in ModLoader.SurvivorMods)
 			{
-				int index = SurvivorMods.IndexOf(survivorModInfo);
-				Debug.LogFormat("[ROR2ML] Adding mod survivor... (Body: {0}, Index Order: {1})", new object[]
-				{
-					survivorModInfo.bodyPrefabString,
-					index
-				});
-				catalog[VanillaCount + index] = survivorModInfo.RegisterModSurvivor();
+				int index = SurvivorMods.IndexOf(survivor);
+                if(survivor.ToReplace>-1)
+                {
+                    Debug.LogFormat("[RoR2ML] Replacing Survivor on Index {1} with survivor {0}...",new object[]
+                        {
+                            survivor.ToReplace,
+                            survivor.Survivor.displayNameToken
+                        });
+                    catalog[survivor.ToReplace] = survivor.GetSurvivorDef();
+                }
+                else
+                {
+                    Debug.LogFormat("[ROR2ML] Adding Survivor {0} with Index Order {1})", new object[]
+                    {
+                        survivor.Survivor.displayNameToken,
+                        VanillaCount+index
+                    });
+                    catalog[VanillaCount + index] = survivor.GetSurvivorDef();
+                }
 			}
+            return catalog;
 		}
 		public static SurvivorIndex[] BuildIdealOrder(SurvivorIndex[] og_order)
 		{
@@ -209,13 +174,27 @@ namespace SeikoML
 			public string description;
 		}
 
-		private static List<CustomSurvivor> SurvivorMods = new List<CustomSurvivor>();
         public static void RegisterSurvivor(CustomSurvivor survivor) 
         {
             SurvivorMods.Add(survivor);
         }
 
 		// Token: 0x04000002 RID: 2
+        public static void RegisterIten(CustomItem item)
+        {
+            ItemMods.Add(item);
+        }
+        public static void SetLobbySize(int value)
+        {
+            LobbySize = value;
+        }
+
+        
+		private static List<CustomSurvivor> SurvivorMods = new List<CustomSurvivor>();
 		private static List<CustomItem> ItemMods = new List<CustomItem>();
-	}
+        private static int LobbySize { get; set; }
+        private static readonly string Version = "v0.0.1";
+        private static int SurvivorCount { get; set; }
+        private static int VanillaCount { get; set; }
+    }
 }
